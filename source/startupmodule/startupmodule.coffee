@@ -1,10 +1,11 @@
 ############################################################
-sci = null
+#region debug
+import { createLogFunctions } from "thingy-debug"
+{log, olog} = createLogFunctions("startupmodule")
+#endregion
 
 ############################################################
-export initialize = ->
-    sci = allModules.scimodule
-    return
+import * as sci from "./scimodule.js"
 
 ############################################################
 export serviceStartup = ->
