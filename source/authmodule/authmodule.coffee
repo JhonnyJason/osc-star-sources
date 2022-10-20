@@ -106,7 +106,7 @@ export authenticateRequest = (req) ->
 
 
 export addClientToServe = (idHex) ->
-    toServeList[idHex] = true
-    
+    # toServeList[idHex] = true
+    return
 
 
