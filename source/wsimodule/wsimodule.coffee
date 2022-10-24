@@ -107,3 +107,7 @@ export onConnect = (socket, req) ->
     clientIdCount++
     return
 
+export mountWSFunctions = (routes) ->
+    log "mountWSFunctions"
+    ## TODO implement
+    return

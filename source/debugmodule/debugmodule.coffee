@@ -2,10 +2,11 @@ import { addModulesToDebug } from "thingy-debug"
 
 ############################################################
 export modulesToDebug = {
-    # authenticationmodule: true
+    authenticationfunctions: true
     # blocksignaturesmodule: true
     # configmodule: true
-    scimodule: true
+    # scimodule: true
+    servicefunctions: true
     # startupmodule: true
 }
     

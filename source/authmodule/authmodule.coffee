@@ -21,92 +21,30 @@ export initialize = ->
     return
 
 ############################################################
-toServeList = {}
+toServe = {}
 
 ############################################################
 masterKeyId = ""
 
+
 ############################################################
-#region internalFunctions
+export getMasterKeyId = -> masterKeyId
 
-authenticateMaster = (req) ->
-    log "authenticateClient"
-    data = req.body
-    sigHex = data.signature
-    timestamp = data.timestamp
-
-    if !timestamp then throw new Error("No Timestamp!") 
-    if !sigHex then throw new Error("No Signature!")
-
-    idHex = masterKeyId
-
-    olog data
-    # olog sigHex
-    # olog timestamp
-
-    # assert that the signature has not been used yet
-    blocker.blockOrThrow(sigHex)
-    # will throw if timestamp is not valid 
-    timestampVerifier.assertValidity(timestamp) 
-
-    delete data.signature
-    content = req.path+JSON.stringify(data)
-    verified = await secUtl.verify(sigHex, idHex, content)
-    
-    if !verified then throw new Error("Invalid Signature!")
+############################################################
+export assertClientIsToBeServed = (idHex) ->
+    if !toServe[idHex] then throw new Error("Client #{idHex} is not to be served!")
     return
 
 
 ############################################################
-authenticateClient = (req) ->
-    log "authenticateClient"
-    data = req.body
-    idHex = data.publicKey
-    sigHex = data.signature
-    timestamp = data.timestamp
-
-    if !timestamp then throw new Error("No Timestamp!") 
-    if !sigHex then throw new Error("No Signature!")
-    if !idHex then throw new Error("No PublicKey!")
-
-    olog data
-    # olog idHex
-    # olog sigHex
-    # olog timestamp
-
-    # assert that the signature has not been used yet
-    blocker.assertAndBlock(sigHex)
-    # will throw if timestamp is not valid 
-    timestampVerifier.assertValidity(timestamp) 
-
-    ## TODO check if client is on the "toServeList"
-
-    delete data.signature
-    content = req.path+JSON.stringify(data)
-    verified = await secUtl.verify(sigHex, idHex, content)
-    
-    if !verified then throw new Error("Invalid Signature!")
-    return
-
-#endregion
-
-############################################################
-export authenticateRequest = (req) ->
-    log "authenticateRequest"
-    log req.path
-    try switch req.path
-        when "/getNodeId","/startSession" then await authenticateClient(req)
-        when "/addClientToServe","/getClientsToServe","/removeClientToServe" then await authenticateMaster(req)
-        else await authenticateSession(req)
-    catch err 
-        log  "Error on authenticateRequest! #{err.message}"
-        throw new Error("Error on authenticateRequest! #{err.message}")
-    return
-
-
-
 export addClientToServe = (idHex) ->
-    # toServeList[idHex] = true
+    # toServe[idHex] = true
     return
+
+export removeClientToServe = (idHex) ->
+    # delete toServe[idHex]
+    return
+
+export getClientsToServe = -> Object.keys(toServe)
 
 
