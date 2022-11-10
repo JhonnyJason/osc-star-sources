@@ -13,19 +13,22 @@ import { authenticateSession } from "./sessionauthmodule.js"
 
 
 ############################################################
-export initialize = ->
-    c = allModules.configmodule
-    if c.validationTimeFrameMS then tfMS = c.validationTimeFrameMS
-    else tfMS = 180000
-    blocker.setBlockingTimeMS(3*tfMS)
-    return
-
-############################################################
 toServe = {}
 
 ############################################################
 masterKeyId = ""
 
+############################################################
+export initialize = ->
+    c = allModules.configmodule
+
+    if c.masterKeyId then masterKeyId = c.masterKeyId
+
+    if c.validationTimeFrameMS then tfMS = c.validationTimeFrameMS
+    else tfMS = 180000
+
+    blocker.setBlockingTimeMS(3*tfMS)
+    return
 
 ############################################################
 export getMasterKeyId = -> masterKeyId
@@ -38,11 +41,11 @@ export assertClientIsToBeServed = (idHex) ->
 
 ############################################################
 export addClientToServe = (idHex) ->
-    # toServe[idHex] = true
+    toServe[idHex] = true
     return
 
 export removeClientToServe = (idHex) ->
-    # delete toServe[idHex]
+    delete toServe[idHex]
     return
 
 export getClientsToServe = -> Object.keys(toServe)

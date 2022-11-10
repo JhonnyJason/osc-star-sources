@@ -20,7 +20,7 @@ export masterAuthentication = (route, args) ->
     if !timestamp then throw new Error("No Timestamp!") 
     if !sigHex then throw new Error("No Signature!")
 
-    idHex = masterKeyId
+    idHex = auth.getMasterKeyId()
 
     olog args
     # olog sigHex
@@ -32,7 +32,7 @@ export masterAuthentication = (route, args) ->
     timestampVerifier.assertValidity(timestamp) 
 
     delete args.signature
-    content = req.path+JSON.stringify(args)
+    content = route+JSON.stringify(args)
     verified = await secUtl.verify(sigHex, idHex, content)
     
     if !verified then throw new Error("Invalid Signature!")
