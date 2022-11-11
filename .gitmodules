@@ -7,3 +7,6 @@
 [submodule "source/servicekeysmodule"]
 	path = source/servicekeysmodule
 	url = git@github.com:JhonnyJason/service-sources-servicekeysmodule.git
+[submodule "source/oscinterface"]
+	path = source/oscinterface
+	url = git@github.com:JhonnyJason/oscinterface.git

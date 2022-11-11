@@ -47,4 +47,27 @@ export startSession = (req) ->
     log "startSession - not implemented yet!"
     return
 
+
+############################################################
+## Client Functions
+export addChatSite = (req) ->
+    log "addChatSite - not implemented yet!"
+    return
+
+export getAllChatSites = (req) ->
+    log "getAllChatSites - not implemented yet!"
+    ## TODO implement
+    response = {
+        chatSites: [
+            "extensivlyon.coffee/the-ultimate-vision",
+            "extensivlyin.coffee/strunfun"
+            "extensivlyon.coffee/thingycreate"
+        ]
+    }
+    return response
+
+export removeChatSite = (req) ->
+    log "removeChatSite - not implemented yet!"
+    return
+
 #endregion
