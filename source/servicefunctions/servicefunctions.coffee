@@ -34,13 +34,8 @@ export removeClientToServe = (req) ->
 ############################################################
 ## Client Functions
 export getSignedNodeId = (req) ->
-    log "getSignedNodeId - not implemented yet!"
-    ## TODO implement
-    response = {
-        serverNodeId: "deadbeafdeadbeaddeadbeafdeadbeaddeadbeafdeadbeaddeadbeafdeadbead"
-        timestamp: 1
-        signature: "deadbeafdeadbeaddeadbeafdeadbeaddeadbeafdeadbeaddeadbeafdeadbeaddeadbeafdeadbeaddeadbeafdeadbeaddeadbeafdeadbeaddeadbeafdeadbead" 
-    }
+    log "getSignedNodeId"
+    response = await serviceKeys.getSignedNodeId()
     return response
 
 export startSession = (req) ->

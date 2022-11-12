@@ -7,6 +7,7 @@ export modulesToDebug = {
     # configmodule: true
     # scimodule: true
     servicefunctions: true
+    servicekeysmodule: true
     # startupmodule: true
 }
     
