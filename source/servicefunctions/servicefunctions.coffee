@@ -5,8 +5,9 @@ import { createLogFunctions } from "thingy-debug"
 #endregion
 
 ############################################################
-import *  as auth from "./authmodule.js"
-import *  as serviceKeys from "./servicekeysmodule.js"
+import * as auth from "./authmodule.js"
+import * as serviceKeys from "./servicekeysmodule.js"
+import * as sessionAuth from "./sessionauthmodule.js"
 
 ############################################################
 #region service Functions
@@ -39,7 +40,10 @@ export getSignedNodeId = (req) ->
     return response
 
 export startSession = (req) ->
-    log "startSession - not implemented yet!"
+    log "startSession"
+    { publicKey } = req 
+    request = JSON.stringify(req)
+    await  sessionAuth.startSession(publicKey, request)
     return
 
 

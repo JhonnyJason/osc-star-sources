@@ -6,6 +6,10 @@ import { createLogFunctions } from "thingy-debug"
 
 ############################################################
 import * as decay from "memory-decay"
+import * as sess from "thingy-session-utils"
+import * as keys from "./servicekeysmodule.js"
+# import * as secUtl from "secret-manager-crypto-utils"
+import * as validatableStamp from "./validatabletimestampmodule.js"
 
 ############################################################
 validCodeMemory = null
@@ -22,8 +26,31 @@ export initialize = ->
     return
 
 ############################################################
-export startSession = (publicKey) ->
+export startSession = (publicKey, request) ->
     log "startSession"
+
+    clientId = publicKey
+    context = "lenny test context"+validatableStamp.create()
+    seedHex = await secUtl.createSharedSecretHashHex(, serverId, context)
+
+    try response = await client.shareSecretTo(publicKey, "sessionSeed", sessionSeed)
+    catch err then throw new Error("Could not share sessionSeed to client! - #{err.message}")
+
+    try clientSeed = await client.getSecretFrom("sessionSeed", publicKey)
+    catch err then throw new Error("Could not get sessionSeed from client! - #{err.message}")
+
+    seed = clientSeed + sessionSeed
+    authCode = await secUtl.sha256Hex(seed)
+    olog { authCode }
+
+    sessionInfo = {publicKey, clientSeed, sessionSeed}
+
+    validCodeMemory[authCode] = sessionInfo
+    validCodeMemory.letForget(authCode)
+    return
+
+export startSessionIndirectly = (publicKey) ->
+    log "startSessionIndirectly"
     sessionSeed = await secUtl.createRandomLengthSalt()
 
     try response = await client.shareSecretTo(publicKey, "sessionSeed", sessionSeed)
