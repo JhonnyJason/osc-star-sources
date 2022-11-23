@@ -26,24 +26,13 @@ export initialize = ->
     return
 
 ############################################################
-export startSession = (publicKey, request) ->
+export startSession = (clientId, request) ->
     log "startSession"
-
-    clientId = publicKey
-    context = "lenny test context"+validatableStamp.create()
-    seedHex = await secUtl.createSharedSecretHashHex(, serverId, context)
-
-    try response = await client.shareSecretTo(publicKey, "sessionSeed", sessionSeed)
-    catch err then throw new Error("Could not share sessionSeed to client! - #{err.message}")
-
-    try clientSeed = await client.getSecretFrom("sessionSeed", publicKey)
-    catch err then throw new Error("Could not get sessionSeed from client! - #{err.message}")
-
-    seed = clientSeed + sessionSeed
-    authCode = await secUtl.sha256Hex(seed)
+    seedHex = await keys.getEntropySeed(clientId)
+    authCode = await sess.createAuthCode(seedHex, request)
     olog { authCode }
 
-    sessionInfo = {publicKey, clientSeed, sessionSeed}
+    sessionInfo = {clientId, seedHex}
 
     validCodeMemory[authCode] = sessionInfo
     validCodeMemory.letForget(authCode)
@@ -76,10 +65,18 @@ export getOrThrow = (authCode) ->
     delete validCodeMemory[authCode]
     return session
 
-export generateNextAuthCode = (session, content) ->
-    log "generateNextAuthCode"
+export generateNextAuthCodeOld = (session, content) ->
+    log "generateNextAuthCodeOld"
     olog {session}
     authCode = await secUtl.sha256Hex(session.clientSeed + session.sessionSeed + content)
+    validCodeMemory[authCode] = session
+    validCodeMemory.letForget(authCode)
+    return
+
+export generateNextAuthCode = (session, request) ->
+    log "generateNextAuthCode"
+    olog {session}
+    authCode = await sess.createAuthCode(session.seedHex, request)
     validCodeMemory[authCode] = session
     validCodeMemory.letForget(authCode)
     return
