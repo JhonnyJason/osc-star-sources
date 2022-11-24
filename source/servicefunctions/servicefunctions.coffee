@@ -41,9 +41,9 @@ export getSignedNodeId = (req) ->
 
 export startSession = (req) ->
     log "startSession"
-    { publicKey } = req 
-    request = JSON.stringify(req)
-    await  sessionAuth.startSession(publicKey, request)
+    { publicKey } = req.body
+    request = JSON.stringify(req.body)
+    await sessionAuth.startSession(publicKey, request)
     return
 
 
@@ -59,7 +59,7 @@ export getAllChatSites = (req) ->
     response = {
         chatSites: [
             "extensivlyon.coffee/the-ultimate-vision",
-            "extensivlyin.coffee/strunfun"
+            "extensivlyin.coffee/strunfun",
             "extensivlyon.coffee/thingycreate"
         ]
     }

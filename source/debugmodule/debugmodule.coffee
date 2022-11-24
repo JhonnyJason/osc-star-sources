@@ -9,6 +9,7 @@ export modulesToDebug = {
     servicefunctions: true
     servicekeysmodule: true
     # startupmodule: true
+    sessionauthmodule: true
 }
     
 addModulesToDebug(modulesToDebug)

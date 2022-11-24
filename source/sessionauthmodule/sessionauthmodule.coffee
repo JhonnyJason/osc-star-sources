@@ -7,7 +7,7 @@ import { createLogFunctions } from "thingy-debug"
 ############################################################
 import * as decay from "memory-decay"
 import * as sess from "thingy-session-utils"
-import * as keys from "./servicekeysmodule.js"
+import * as serviceCrypto from "./servicekeysmodule.js"
 # import * as secUtl from "secret-manager-crypto-utils"
 import * as validatableStamp from "./validatabletimestampmodule.js"
 
@@ -28,9 +28,10 @@ export initialize = ->
 ############################################################
 export startSession = (clientId, request) ->
     log "startSession"
-    seedHex = await keys.getEntropySeed(clientId)
+    seedHex = await serviceCrypto.getEntropySeed(clientId)
     authCode = await sess.createAuthCode(seedHex, request)
-    olog { authCode }
+
+    olog { seedHex, authCode, request }
 
     sessionInfo = {clientId, seedHex}
 
@@ -75,8 +76,9 @@ export generateNextAuthCodeOld = (session, content) ->
 
 export generateNextAuthCode = (session, request) ->
     log "generateNextAuthCode"
-    olog {session}
     authCode = await sess.createAuthCode(session.seedHex, request)
+    olog {session, authCode}
+    
     validCodeMemory[authCode] = session
     validCodeMemory.letForget(authCode)
     return

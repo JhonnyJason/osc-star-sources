@@ -34,7 +34,8 @@ export masterAuthentication = (route, args) ->
     delete args.signature
     content = route+JSON.stringify(args)
     verified = await secUtl.verify(sigHex, idHex, content)
-    
+    args.signature = sigHex
+
     if !verified then throw new Error("Invalid Signature!")
     return
     
@@ -60,11 +61,11 @@ export clientAuthentication = (route, args) ->
     # assert client is to be served
     auth.assertClientIsToBeServed(idHex)
 
-    
     delete args.signature
     content = route+JSON.stringify(args)
     verified = await secUtl.verify(sigHex, idHex, content)
-    
+    args.signature = sigHex
+
     if !verified then throw new Error("Invalid Signature!")
     return
 
@@ -74,9 +75,9 @@ export sessionAuthentication = (route, args) ->
     if !authCode then throw new Error("No AuthCode!")
     
     olog args
-
+    requestString = JSON.stringify(args)
     args.session = session.getOrThrow(authCode)
 
-    content = route+JSON.stringify(args)
-    session.generateNextAuthCode(session, content)
+    # content = route+JSON.stringify(args)
+    session.generateNextAuthCode(args.session, requestString)
     return
